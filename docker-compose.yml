@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_DB: pcmod
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  server:
+    build: ./server
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgres://pguser:pgpassword@db:5432/pcmod
+      ADMIN_DEFAULT_EMAIL: admin@example.com
+      ADMIN_DEFAULT_PASSWORD: admin123
+      ADMIN_JWT_SECRET: dev_jwt_secret
+      TOSS_SECRET_KEY: ""
+      KAKAO_ADMIN_KEY: ""
+    depends_on:
+      - db
+
+volumes:
+  db_data:
